@@ -79,6 +79,12 @@ AI_REBUILD_STEPS = [
         "trigger": AiClient.trigger_pdf_cache_rebuild,
         "status": AiClient.get_pdf_cache_rebuild_status,
     },
+    {
+        "key": "chroma_rebuild",
+        "label": "Chroma 벡터DB 갱신",
+        "trigger": AiClient.trigger_chroma_rebuild,
+        "status": AiClient.get_chroma_rebuild_status,
+    },
 ]
 
 AI_REBUILD_POLL_SEC = 5

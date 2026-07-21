@@ -53,6 +53,24 @@ class AiClient:
         return await AiClient._post("/policy-summary/recommend", {"summaries": summaries})
 
     @staticmethod
+    async def ask_chat(query: str, top_k: int = 3) -> dict:
+        """bene_ai의 POST /chat/ask 호출 (BM25+Chroma 하이브리드 검색 + watsonx RAG 답변).
+        Returns: {query, answer, sources:[{plcyNo, policy_name, summary, rank}], llm_called}"""
+        return await AiClient._post("/chat/ask", {"query": query, "top_k": top_k})
+
+    @staticmethod
+    async def trigger_chroma_rebuild() -> dict:
+        """bene_ai의 POST /chroma/rebuild 호출. 챗봇용 Chroma 벡터DB를 블루그린 방식으로
+        갱신하는 백그라운드 작업을 시작시킨다(신규/수정/삭제 정책 반영).
+        Returns: {status: "started"|"up_to_date"|"already_running", new_count?}"""
+        return await AiClient._post("/chroma/rebuild", {})
+
+    @staticmethod
+    async def get_chroma_rebuild_status() -> dict:
+        """bene_ai의 GET /chroma/rebuild/status 호출. Returns: {running, last_run}"""
+        return await AiClient._get("/chroma/rebuild/status")
+
+    @staticmethod
     async def trigger_search_docs_rebuild() -> dict:
         """bene_ai의 POST /search-docs/rebuild 호출. 새로 추가된 정책만 골라 검색문서/임베딩을
         생성해 운영 파일에 이어붙이는 백그라운드 작업을 시작시킨다.
